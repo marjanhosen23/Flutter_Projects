@@ -167,7 +167,7 @@ class _AddDoctorState extends State<AddDoctor> {
                       'Save',
                       style: app_textstyles.appBarTitle.copyWith(
                         fontSize: 20,
-                        color: Colors.white,
+
                       ),
                     ),
                   ),

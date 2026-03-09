@@ -1,4 +1,6 @@
-
+/*marjan hosen Oni
+Daffodil international University
+*/
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
 import 'common/splash.dart';
@@ -13,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
       theme: AppTheme.light(),
       home:Splash(),
     );

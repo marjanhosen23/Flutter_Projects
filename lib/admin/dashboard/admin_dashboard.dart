@@ -3,6 +3,7 @@ import 'package:hospital_app/admin/auth/admin_login.dart';
 import 'package:hospital_app/admin/doctor_management/doctor_management.dart';
 import 'package:hospital_app/admin/staff_management/staff_Management.dart';
 import 'package:hospital_app/admin/today_setting/todays_settings.dart';
+import 'package:hospital_app/common/logout_confirm.dart';
 import 'package:hospital_app/theme/app_colors.dart';
 import 'package:hospital_app/theme/app_textstyles.dart';
 
@@ -17,6 +18,7 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   String selectManage = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,13 +80,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 color: AppColors.card_primary,
               ).then((value) {
                 if (value == 'logout') {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const AdminLogin()),
-                      (route) => false,
-                    );
-                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LogoutConfirm(),
+                    ),
+                  );
                 }
               });
             },
@@ -128,17 +129,21 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
               child: Column(
                 children: [
-                  ManageCard('Doctor Management', 'assets/icons/sthetoscope.png'),
-                  SizedBox(height: 20,),
-                  ManageCard('Staff Management', 'assets/icons/staff_dashboard.png'),
-                  SizedBox(height: 20,),
-                  ManageCard("Todats's Setting", 'assets/icons/gears.png')
-
+                  ManageCard(
+                    'Doctor Management',
+                    'assets/icons/sthetoscope.png',
+                  ),
+                  SizedBox(height: 20),
+                  ManageCard(
+                    'Staff Management',
+                    'assets/icons/staff_dashboard.png',
+                  ),
+                  SizedBox(height: 20),
+                  ManageCard("Todats's Setting", 'assets/icons/gears.png'),
                 ],
               ),
             ),
-            SizedBox(height: 24,),
-
+            SizedBox(height: 24),
           ],
         ),
       ),
@@ -152,25 +157,24 @@ class _AdminDashboardState extends State<AdminDashboard> {
         setState(() {
           selectManage = Title;
         });
-        if(Title == 'Doctor Management')
-          {
-            Navigator.push(context,
-              MaterialPageRoute(builder: (_) => DoctorManagement())
-                );
-          }
-        if(Title == 'Staff Management')
-          {
-            Navigator.push(context,
-            MaterialPageRoute(builder: (_) => StaffManagement())
-            );
-          }
-        if(Title == "Todats's Setting")
-          {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => TodaysSettings())
-            );
-          }
-
+        if (Title == 'Doctor Management') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => DoctorManagement()),
+          );
+        }
+        if (Title == 'Staff Management') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => StaffManagement()),
+          );
+        }
+        if (Title == "Todays's Setting") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => TodaysSettings()),
+          );
+        }
       },
       child: Container(
         width: 321,

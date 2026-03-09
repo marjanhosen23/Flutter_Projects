@@ -209,7 +209,7 @@ Widget actionButton(String title, VoidCallback onTap) {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: AppColors.app_bar,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(

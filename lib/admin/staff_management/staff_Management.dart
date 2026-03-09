@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hospital_app/admin/staff_management/add_staff.dart';
+import 'package:hospital_app/admin/staff_management/change_pin.dart';
 import 'package:hospital_app/theme/app_colors.dart';
 import 'package:hospital_app/theme/app_textstyles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,7 +28,7 @@ class _StaffManagementState extends State<StaffManagement> {
 
     if (data != null) {
       setState(() {
-        staffs = List<Map<String, String>>.from(jsonDecode(data));
+        staffs = List<Map<String, dynamic>>.from(jsonDecode(data));
       });
     }
   }
@@ -80,7 +81,7 @@ class _StaffManagementState extends State<StaffManagement> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/icons/plus.png',height: 21,),
+                    Image.asset('assets/icons/plus.png', height: 21),
                     const SizedBox(width: 8),
                     Text('Add New Staff', style: app_textstyles.appBarTitle),
                   ],
@@ -94,20 +95,42 @@ class _StaffManagementState extends State<StaffManagement> {
               itemCount: staffs.length,
               itemBuilder: (context, index) {
                 return StaffCard(
-                  name: staffs[index]['name']!,
-                  role: staffs[index]['role']!,
-                  pin: staffs[index]['pin']!,
-                  status: staffs[index]['status']!,
+                  name: staffs[index]['name'] ?? '',
+                  role: staffs[index]['role'] ?? '',
+                  pin: staffs[index]['pin'] ?? '',
+                  status: staffs[index]['status'] ?? 'Active',
                   onRemove: () {
                     setState(() {
                       staffs.removeAt(index);
                     });
                     saveStaffs();
                   },
-                  onChangePin: () {
+                  onChangePin: () async {
+                    final newPin = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            ChangePin(oldPin:staffs[index]['pin'])
+                      ),
+                    );
+
+                    if (newPin != null) {
+                      setState(() {
+                        staffs[index]['pin'] = newPin;
+                      });
+
+                      saveStaffs();
+                    }
+                  },
+                  onToggleStatus: () {
                     setState(() {
-                      staffs[index]['pin'] = '0000';
+                      if (staffs[index]['status'] == 'Active') {
+                        staffs[index]['status'] = 'Inactive';
+                      } else {
+                        staffs[index]['status'] = 'Active';
+                      }
                     });
+
                     saveStaffs();
                   },
                 );
@@ -119,13 +142,15 @@ class _StaffManagementState extends State<StaffManagement> {
     );
   }
 }
-class StaffCard extends StatelessWidget {
+
+class StaffCard extends StatefulWidget {
   final String name;
   final String role;
   final String pin;
   final String status;
   final VoidCallback onRemove;
   final VoidCallback onChangePin;
+  final VoidCallback onToggleStatus;
 
   const StaffCard({
     super.key,
@@ -135,7 +160,15 @@ class StaffCard extends StatelessWidget {
     required this.status,
     required this.onRemove,
     required this.onChangePin,
+    required this.onToggleStatus,
   });
+
+  @override
+  State<StaffCard> createState() => _StaffCardState();
+}
+
+class _StaffCardState extends State<StaffCard> {
+  bool showPin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -153,32 +186,73 @@ class StaffCard extends StatelessWidget {
           ),
         ],
       ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(name,
-              style: app_textstyles.body.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              )),
+          Text(
+            widget.name,
+            style: app_textstyles.body.copyWith(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
           const SizedBox(height: 4),
-          Text('Role: $role',style: app_textstyles.body.copyWith(
-            fontSize: 18,
-          ),),
-          Text('PIN: ****',style: app_textstyles.body.copyWith(
-            fontSize: 18,
-          ),),
-          Text('Status: $status',style: app_textstyles.body.copyWith(
-            fontSize: 18,
-          ),),
+
+          Text(
+            'Role: ${widget.role}',
+            style: app_textstyles.body.copyWith(fontSize: 18),
+          ),
+
+          const SizedBox(height: 4),
+
+          Row(
+            children: [
+              Text(
+                'PIN: ${showPin ? widget.pin : "****"}',
+                style: app_textstyles.body.copyWith(fontSize: 18),
+              ),
+
+              const SizedBox(width: 8),
+
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showPin = !showPin;
+                  });
+                },
+                child: Icon(
+                  showPin ? Icons.visibility_off : Icons.visibility,
+                  size: 20,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 4),
+
+          Text(
+            'Status: ${widget.status}',
+            style: app_textstyles.body.copyWith(fontSize: 18),
+          ),
 
           const SizedBox(height: 12),
 
           Row(
             children: [
-              actionButton('Change Pin', onChangePin),
-              const SizedBox(width: 12),
-              actionButton('Remove', onRemove),
+              actionButton('Change Pin', widget.onChangePin),
+
+              const SizedBox(width: 10),
+
+              actionButton(
+                widget.status == "Active" ? 'Deactivate' : 'Activate',
+                widget.onToggleStatus,
+              ),
+
+              const SizedBox(width: 10),
+
+              actionButton('Remove', widget.onRemove),
             ],
           ),
         ],
@@ -186,6 +260,7 @@ class StaffCard extends StatelessWidget {
     );
   }
 }
+
 Widget actionButton(String title, VoidCallback onTap) {
   return Expanded(
     child: GestureDetector(
@@ -193,7 +268,7 @@ Widget actionButton(String title, VoidCallback onTap) {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: AppColors.app_bar,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
