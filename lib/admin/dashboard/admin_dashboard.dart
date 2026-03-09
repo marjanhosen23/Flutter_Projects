@@ -139,7 +139,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     'assets/icons/staff_dashboard.png',
                   ),
                   SizedBox(height: 20),
-                  ManageCard("Todats's Setting", 'assets/icons/gears.png'),
+                  ManageCard("Todays's Setting", 'assets/icons/gears.png'),
                 ],
               ),
             ),
