@@ -14,7 +14,7 @@ class DoctorManagement extends StatefulWidget {
 }
 
 class _DoctorManagementState extends State<DoctorManagement> {
-  List<Map<String, String>> doctors = [];
+  List<Map<String, dynamic>> doctors = [];
 
   @override
   void initState() {
@@ -28,7 +28,7 @@ class _DoctorManagementState extends State<DoctorManagement> {
 
     if (data != null) {
       setState(() {
-        doctors = List<Map<String, String>>.from(jsonDecode(data));
+        doctors = List<Map<String, dynamic>>.from(jsonDecode(data));
       });
     }
   }

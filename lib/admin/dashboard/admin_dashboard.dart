@@ -139,7 +139,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     'assets/icons/staff_dashboard.png',
                   ),
                   SizedBox(height: 20),
-                  ManageCard("Todays's Setting", 'assets/icons/gears.png'),
+                  ManageCard("Today's Setting", 'assets/icons/gears.png'),
                 ],
               ),
             ),
@@ -169,7 +169,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             MaterialPageRoute(builder: (_) => StaffManagement()),
           );
         }
-        if (Title == "Todays's Setting") {
+        if (Title == "Today's Setting") {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => TodaysSettings()),
