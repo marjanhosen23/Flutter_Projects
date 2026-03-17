@@ -18,7 +18,6 @@ class _AdminLoginState extends State<AdminLogin> {
   bool isLoading = false;
   bool hidePin = true;
 
-
   bool isValidPin(String pin) {
     final RegExp pinRegex = RegExp(
       r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
@@ -45,136 +44,131 @@ class _AdminLoginState extends State<AdminLogin> {
           ),
 
           Positioned(
-              top: 260,
-              left: 16,
-              right: 16,
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppColors.card_primary,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
-
+            top: 260,
+            left: 16,
+            right: 16,
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.card_primary,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 10,
+                    offset: Offset(0, 6),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 10,
-                      offset: Offset(0, 6)
-                    )
-                  ]
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
 
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Text('LOGIN', style: app_textstyles.sectionTitle),
+                  ),
 
-                  children: [
+                  SizedBox(height: 20),
 
-                    Center(
-                      child: Text(
-                        'LOGIN',
-                        style: app_textstyles.sectionTitle,
+                  TextField(
+                    controller: hospitalController,
+                    decoration: InputDecoration(
+                      labelText: 'Hospital Name',
+                      labelStyle: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 16,
                       ),
                     ),
+                  ),
+                  SizedBox(height: 16),
 
-
-                    SizedBox(height: 20,),
-
-                    TextField(
-                      controller: hospitalController,
-                      decoration: InputDecoration(
-                        labelText: 'Hospital Name',
-                        labelStyle: TextStyle(
-                          color: AppColors.hint_text,
-                          fontSize: 16,
+                  TextField(
+                    controller: pinController,
+                    obscureText: hidePin,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      labelText: 'Hospital PIN',
+                      labelStyle: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 16,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          hidePin ? Icons.visibility_off : Icons.visibility,
                         ),
+                        onPressed: () {
+                          setState(() {
+                            hidePin = !hidePin;
+                          });
+                        },
                       ),
                     ),
-                    SizedBox(height: 16,),
+                  ),
 
-                    TextField(
-                      controller: pinController,
-                      obscureText: hidePin,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        labelText: 'Hospital PIN',
-                        labelStyle: TextStyle(
-                          color: AppColors.hint_text,
-                          fontSize: 16,),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            hidePin ? Icons.visibility_off : Icons.visibility,
+                  SizedBox(height: 20),
+                  Center(
+                    child: SizedBox(
+                      width: 142,
+                      child: ElevatedButton(
+                        onPressed: isLoading ? null : _login,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary_pressed,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              hidePin = !hidePin;
-                            });
-                          },
                         ),
+                        child: isLoading
+                            ? const SizedBox(
+                                height: 18,
+                                width: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text('Login'),
                       ),
                     ),
+                  ),
 
-                    SizedBox(height: 20,),
-                    Center(
-                      child: SizedBox(
-                        width: 142,
-                        child: ElevatedButton(
-                          onPressed: isLoading ? null : _login,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary_pressed,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                  SizedBox(height: 14),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Don’t have an account?',
+                        style: app_textstyles.body,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => AdminSignup()),
+                          );
+                        },
+                        child: Text(
+                          ' Create',
+                          style: app_textstyles.body.copyWith(
+                            color: AppColors.primary_pressed,
+                            fontWeight: FontWeight.w600,
                           ),
-                          child: isLoading
-                              ? const SizedBox(
-                            height: 18,
-                            width: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                              : const Text('Login',),
                         ),
                       ),
-                    ),
-
-                    SizedBox(height: 14,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Don’t have an account?',
-                          style: app_textstyles.body,),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => AdminSignup()));
-
-                          },
-                          child: Text(' Create',
-                            style: app_textstyles.body.copyWith(
-                              color: AppColors.primary_pressed,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-
-                        ),
-
-                      ],
-                    ),
-                    Padding(padding: EdgeInsets.all(40))
-
-                  ],
-                ),
-              )
-          )
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.all(40)),
+                ],
+              ),
+            ),
+          ),
         ],
-
       ),
-
     );
   }
 
@@ -192,13 +186,13 @@ class _AdminLoginState extends State<AdminLogin> {
     debugPrint('ENTERED PIN: $enteredPin');
 
     if (savedHospital == null || savedPin == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please signup first')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please signup first')));
       return;
     }
 
-    if (enteredHospital != savedHospital ||
+    if (enteredHospital.toLowerCase() != savedHospital.toLowerCase() ||
         enteredPin != savedPin) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invalid login credentials')),
@@ -209,9 +203,7 @@ class _AdminLoginState extends State<AdminLogin> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => AdminDashboard(
-          hospitalName: enteredHospital,
-        ),
+        builder: (_) => AdminDashboard(hospitalName: enteredHospital),
       ),
     );
   }
@@ -222,5 +214,4 @@ class _AdminLoginState extends State<AdminLogin> {
     pinController.dispose();
     super.dispose();
   }
-
 }

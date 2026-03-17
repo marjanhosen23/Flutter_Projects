@@ -74,7 +74,7 @@ class _AdminSignupState extends State<AdminSignup> {
                      labelText: 'Hospital Name',
 
                      labelStyle: TextStyle(
-                       color: AppColors.hint_text,
+                       color: AppColors.primary,
                        fontSize: 16,
                      ),
                    ),
@@ -86,9 +86,9 @@ class _AdminSignupState extends State<AdminSignup> {
                    decoration: InputDecoration(
                      labelText: 'Email',
 
-                     labelStyle: TextStyle(
-                       color: AppColors.hint_text,
-                       fontSize: 16,
+                       labelStyle: TextStyle(
+                         color: AppColors.primary,
+                         fontSize: 16,
                      )
                    ),
                  ),
@@ -97,9 +97,9 @@ class _AdminSignupState extends State<AdminSignup> {
                    controller: mobileController,
                    decoration: InputDecoration(
                      labelText: 'Mobile Number',
-                       labelStyle: TextStyle(
-                         color: AppColors.hint_text,
-                         fontSize: 16,
+                     labelStyle: TextStyle(
+                       color: AppColors.primary,
+                       fontSize: 16,
                        ),
                    ),
                  ),
@@ -111,7 +111,7 @@ class _AdminSignupState extends State<AdminSignup> {
                    decoration: InputDecoration(
                      labelText: 'Hospital PIN',
                      labelStyle: TextStyle(
-                       color: AppColors.hint_text,
+                       color: AppColors.primary,
                        fontSize: 16,
                      ),
                      suffixIcon: IconButton(
@@ -134,8 +134,8 @@ class _AdminSignupState extends State<AdminSignup> {
                    decoration: InputDecoration(
                      labelText: 'Confirm PIN',
                      labelStyle: TextStyle(
-                       color: AppColors.hint_text,
-                       fontSize: 16.0,
+                       color: AppColors.primary,
+                       fontSize: 16,
 
                      ),
                      suffixIcon: IconButton(

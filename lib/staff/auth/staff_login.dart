@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hospital_app/theme/app_colors.dart';
 import 'package:hospital_app/theme/app_textstyles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hospital_app/staff/doctor_select/select_doctor.dart';
 
 class StaffLogin extends StatefulWidget {
   const StaffLogin({super.key});
@@ -11,6 +14,7 @@ class StaffLogin extends StatefulWidget {
 }
 
 class _StaffLoginState extends State<StaffLogin> {
+  final TextEditingController hospitalController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController pinController = TextEditingController();
 
@@ -18,7 +22,7 @@ class _StaffLoginState extends State<StaffLogin> {
   bool hidePin = true;
 
   bool isValidPin(String pin) {
-    final RegExp pinRegex = RegExp(r'^\d{4,}$'); // minimum 4 digit numeric
+    final RegExp pinRegex = RegExp(r'^\d{4}$');
     return pinRegex.hasMatch(pin);
   }
 
@@ -67,6 +71,18 @@ class _StaffLoginState extends State<StaffLogin> {
                   const SizedBox(height: 20),
 
                   TextField(
+                    controller: hospitalController,
+                    decoration: InputDecoration(
+                      labelText: 'Hospital Name',
+                      labelStyle: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                    SizedBox(height: 16),
+
+                  TextField(
                     controller: nameController,
                     decoration: InputDecoration(
                       labelText: 'Name',
@@ -77,7 +93,7 @@ class _StaffLoginState extends State<StaffLogin> {
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                   SizedBox(height: 16),
 
                   TextField(
                     controller: pinController,
@@ -91,6 +107,7 @@ class _StaffLoginState extends State<StaffLogin> {
                       labelStyle: TextStyle(
                         color: AppColors.primary,
                         fontSize: 16,
+
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -107,7 +124,7 @@ class _StaffLoginState extends State<StaffLogin> {
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
 
                   SizedBox(
                     width: double.infinity,
@@ -121,7 +138,7 @@ class _StaffLoginState extends State<StaffLogin> {
                         ),
                       ),
                       child: isLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                         height: 18,
                         width: 18,
                         child: CircularProgressIndicator(
@@ -129,7 +146,7 @@ class _StaffLoginState extends State<StaffLogin> {
                           color: Colors.white,
                         ),
                       )
-                          : const Text('Login'),
+                          :  Text('Login'),
                     ),
                   ),
 
@@ -143,36 +160,69 @@ class _StaffLoginState extends State<StaffLogin> {
     );
   }
 
-  void _login() {
+  void _login() async {
+    final hospital = hospitalController.text.trim();
     final name = nameController.text.trim();
     final pin = pinController.text.trim();
 
-    debugPrint('PIN="$pin" LENGTH=${pin.length}');
-
-    if (name.isEmpty || pin.isEmpty) {
+    if (hospital.isEmpty || name.isEmpty || pin.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Name এবং Staff PIN দিতে হবে'),
-        ),
+        const SnackBar(content: Text('সব ফিল্ড পূরণ করতে হবে')),
       );
       return;
     }
 
     if (!isValidPin(pin)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Staff PIN অবশ্যই ঠিক ৪ ডিজিট নাম্বার হবে'),
-        ),
+        SnackBar(content: Text('PIN অবশ্যই ৪ ডিজিট হতে হবে')),
       );
       return;
     }
 
     setState(() => isLoading = true);
 
-    Future.delayed(const Duration(seconds: 2), () {
+    final prefs = await SharedPreferences.getInstance();
+
+    final savedHospital = prefs.getString('hospital_name');
+    final data = prefs.getString('staffs');
+
+    if (data == null) {
       setState(() => isLoading = false);
-      // Navigate to Staff Dashboard
-    });
+      return;
+    }
+
+    final staffs = List<Map<String, dynamic>>.from(jsonDecode(data));
+
+    bool isValid = false;
+
+    for (var staff in staffs) {
+
+      if (staff['name'].toLowerCase() == name.toLowerCase() &&
+          staff['pin'] == pin &&
+          staff['status'] == 'Active') {
+
+        isValid = true;
+        break;
+      }
+
+    }
+
+    setState(() => isLoading = false);
+
+    if (hospital.toLowerCase() == savedHospital?.toLowerCase() && isValid) {
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => SelectDoctor()),
+      );
+
+    } else {
+
+      ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(content: Text('Invalid Hospital / Name / PIN')),
+      );
+
+    }
   }
 
 
@@ -180,6 +230,7 @@ class _StaffLoginState extends State<StaffLogin> {
   void dispose() {
     nameController.dispose();
     pinController.dispose();
+    hospitalController.dispose();
     super.dispose();
   }
 }
