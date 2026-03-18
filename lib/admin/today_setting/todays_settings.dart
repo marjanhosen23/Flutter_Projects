@@ -403,35 +403,63 @@ class _TodaysSettingsState extends State<TodaysSettings> {
               ),
               SizedBox(height: 10,),
 
-              Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    final prefs = await SharedPreferences.getInstance();
-
-                    prefs.setString('today_settings', jsonEncode(doctors));
-
-                    prefs.setString('doctors', jsonEncode(doctors));
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Today's settings saved")),
-                    );
-                  },
-                  child: Text(
-                    "Save Today's Settings",
-                    style: app_textstyles.inputText.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 30,),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: SafeArea(
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 10,
+              offset: Offset(0, 5),
+            ),
+          ],
+        ),
+        child: ElevatedButton(
+          onPressed: () async {
+
+            final prefs = await SharedPreferences.getInstance();
+
+            prefs.setString(
+              'today_settings',
+              jsonEncode(doctors),
+            );
+
+            prefs.setString(
+              'doctors',
+              jsonEncode(doctors),
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Today's settings saved"),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 0,
+          ),
+          child: Text(
+            "Save Today's Settings",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    ),
     );
   }
 

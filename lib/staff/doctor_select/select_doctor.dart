@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hospital_app/staff/staff_panel/staff_panel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hospital_app/theme/app_colors.dart';
 import 'package:hospital_app/theme/app_textstyles.dart';
@@ -34,6 +35,7 @@ class _SelectDoctorState extends State<SelectDoctor> {
       });
     }
   }
+  bool isClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class _SelectDoctorState extends State<SelectDoctor> {
             TextField(
               controller: searchCtrl,
               decoration: InputDecoration(
-                hintText: 'Serach Doctors',
+                hintText: 'Search Doctors',
                 prefixIcon: Icon(Icons.search),
                 filled: true,
                 fillColor: AppColors.card_primary,
@@ -123,10 +125,17 @@ class _SelectDoctorState extends State<SelectDoctor> {
         ),
       ),
 
-        bottomNavigationBar: Container(
-          margin: EdgeInsets.fromLTRB(16, 0, 16, 20),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          margin: const EdgeInsets.only(left: 16, right: 16, bottom: 30),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
+
+            border: Border.all(
+              color: isClicked ? AppColors.card_highlight : AppColors.card_highlight,
+              width: 2,
+            ),
+
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.25),
@@ -137,6 +146,11 @@ class _SelectDoctorState extends State<SelectDoctor> {
           ),
           child: ElevatedButton(
             onPressed: () async {
+
+              setState(() {
+                isClicked = true;
+              });
+
               final prefs = await SharedPreferences.getInstance();
 
               prefs.setString(
@@ -144,25 +158,24 @@ class _SelectDoctorState extends State<SelectDoctor> {
                 jsonEncode(selectedDoctors),
               );
 
-              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_)=> StaffPanel()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              padding: EdgeInsets.symmetric(vertical: 14),
+              padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               elevation: 0,
             ),
-            child: Text(
+            child: const Text(
               "Confirm",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,
+              color: Colors.white),
             ),
           ),
         ),
+      ),
     );
   }
 
