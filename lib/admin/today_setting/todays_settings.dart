@@ -337,8 +337,11 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                           children: [
 
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: (doctor['status'] != "Running")
+                                  ? null
+                                  : () {
                                 setState(() {
+                                  doctor['paused'] = true;
                                   doctor['status'] = "Paused";
                                 });
                               },
@@ -353,17 +356,14 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                             ),
 
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: (doctor['status'] != "Paused")
+                                  ? null
+                                  : () {
                                 setState(() {
+                                  doctor['paused'] = false;
                                   doctor['status'] = "Running";
-
-                                  if (doctor['nowServing'] == 0) {
-                                    doctor['nowServing'] =
-                                        doctor['serialStart'];
-                                  }
                                 });
                               },
-
                               child: Text(
                                 "Start",
                                 style: app_textstyles.inputText.copyWith(
@@ -465,8 +465,15 @@ class _TodaysSettingsState extends State<TodaysSettings> {
 
   void updateStatus() {
     for (var doctor in doctors) {
+
       if (doctor['active'] == false) {
         doctor['status'] = "Off Duty";
+        continue;
+      }
+
+      // Pause has highest priority
+      if (doctor['paused'] == true) {
+        doctor['status'] = "Paused";
         continue;
       }
 
@@ -477,18 +484,19 @@ class _TodaysSettingsState extends State<TodaysSettings> {
 
       TimeOfDay start = doctor['startTime'];
       TimeOfDay end = doctor['endTime'];
-
       final now = TimeOfDay.now();
 
-      int nowMinutes = now.hour * 60 + now.minute;
-      int startMinutes = start.hour * 60 + start.minute;
-      int endMinutes = end.hour * 60 + end.minute;
+      int nowMin = now.hour * 60 + now.minute;
+      int startMin = start.hour * 60 + start.minute;
+      int endMin = end.hour * 60 + end.minute;
 
-      if (nowMinutes < startMinutes) {
+      if (nowMin < startMin) {
         doctor['status'] = "Not Started";
-      } else if (nowMinutes >= startMinutes && nowMinutes <= endMinutes) {
+      }
+      else if (nowMin >= startMin && nowMin <= endMin) {
         doctor['status'] = "Running";
-      } else {
+      }
+      else {
         doctor['status'] = "Finished";
       }
     }
