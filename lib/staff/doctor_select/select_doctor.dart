@@ -6,7 +6,7 @@ import 'package:hospital_app/theme/app_colors.dart';
 import 'package:hospital_app/theme/app_textstyles.dart';
 
 class SelectDoctor extends StatefulWidget {
-  const SelectDoctor({super.key});
+   SelectDoctor({super.key});
 
   @override
   State<SelectDoctor> createState() => _SelectDoctorState();
@@ -87,8 +87,8 @@ class _SelectDoctorState extends State<SelectDoctor> {
                   bool isSelected = selectedDoctors.contains(doctor);
 
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.all(12),
+                    margin:  EdgeInsets.only(bottom: 10),
+                    padding:  EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: AppColors.card_primary,
                       borderRadius: BorderRadius.circular(10),
@@ -127,7 +127,7 @@ class _SelectDoctorState extends State<SelectDoctor> {
 
       bottomNavigationBar: SafeArea(
         child: Container(
-          margin: const EdgeInsets.only(left: 16, right: 16, bottom: 30),
+          margin:  EdgeInsets.only(left: 16, right: 16, bottom: 30),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
 
@@ -162,13 +162,13 @@ class _SelectDoctorState extends State<SelectDoctor> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              padding:  EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               elevation: 0,
             ),
-            child: const Text(
+            child: Text(
               "Confirm",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,
               color: Colors.white),

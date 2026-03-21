@@ -3,7 +3,7 @@ class AppColors {
 
   static const Color primary = Color(0xff8FBFA8);
   static const Color primary_pressed = Color(0xff7AAA93);
-  static const Color primary_disaabled = Color(0xffCDEED6);
+  static const Color primary_disabled = Color(0xffCDEED6);
 
   static const Color backgroundColor = Color(0xffEAF4EA);
 

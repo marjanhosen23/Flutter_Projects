@@ -15,7 +15,7 @@ class AppTheme {
         centerTitle: true,
         elevation: 0,
         titleTextStyle: app_textstyles.appBarTitle,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
 
       // Card Theme
@@ -31,11 +31,11 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          disabledBackgroundColor: AppColors.primary_disaabled,
+          disabledBackgroundColor: AppColors.primary_disabled,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          padding: EdgeInsets.symmetric(vertical: 14),
           textStyle: app_textstyles.button,
         ),
       ),

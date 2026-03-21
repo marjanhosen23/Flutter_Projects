@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hospital_app/staff/doctor_select/select_doctor.dart';
 
 class StaffLogin extends StatefulWidget {
-  const StaffLogin({super.key});
+  StaffLogin({super.key});
 
   @override
   State<StaffLogin> createState() => _StaffLoginState();
@@ -49,10 +49,10 @@ class _StaffLoginState extends State<StaffLogin> {
             right: 16,
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding:  EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: AppColors.card_primary,
-                borderRadius: const BorderRadius.only(
+                borderRadius:  BorderRadius.only(
                   topLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
                 ),
@@ -68,7 +68,7 @@ class _StaffLoginState extends State<StaffLogin> {
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                   SizedBox(height: 20),
 
                   TextField(
                     controller: hospitalController,
@@ -167,7 +167,7 @@ class _StaffLoginState extends State<StaffLogin> {
 
     if (hospital.isEmpty || name.isEmpty || pin.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('সব ফিল্ড পূরণ করতে হবে')),
+         SnackBar(content: Text('সব ফিল্ড পূরণ করতে হবে')),
       );
       return;
     }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hospital_app/admin/dashboard/admin_dashboard.dart';
 import 'package:hospital_app/admin/doctor_management/add_doctor.dart';
 import 'package:hospital_app/theme/app_colors.dart';
 import 'package:hospital_app/theme/app_textstyles.dart';
@@ -36,6 +35,7 @@ class _DoctorManagementState extends State<DoctorManagement> {
   void saveDoctors() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('doctors', jsonEncode(doctors));
+    prefs.remove('today_settings');
   }
 
   @override

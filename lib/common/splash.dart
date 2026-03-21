@@ -20,7 +20,7 @@ class _SplashState extends State<Splash> {
     Timer(Duration(seconds: 4), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const RoleSelect()),
+        MaterialPageRoute(builder: (context) => RoleSelect()),
       );
     });
   }

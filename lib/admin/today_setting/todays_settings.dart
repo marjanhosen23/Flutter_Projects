@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 
 class TodaysSettings extends StatefulWidget {
-  const TodaysSettings({super.key});
+   TodaysSettings({super.key});
 
   @override
   State<TodaysSettings> createState() => _TodaysSettingsState();
@@ -23,7 +23,7 @@ class _TodaysSettingsState extends State<TodaysSettings> {
     loadDoctors();
     updateStatus();
 
-    timer = Timer.periodic(const Duration(seconds: 30), (timer) {
+    timer = Timer.periodic( Duration(seconds: 30), (timer) {
       updateStatus();
     });
   }
@@ -39,7 +39,8 @@ class _TodaysSettingsState extends State<TodaysSettings> {
 
   void loadDoctors() async {
     final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString('doctors');
+    final data =
+        prefs.getString('today_settings') ?? prefs.getString('doctors');
 
     if (data != null) {
       final decoded = List<Map<String, dynamic>>.from(jsonDecode(data));
@@ -52,12 +53,18 @@ class _TodaysSettingsState extends State<TodaysSettings> {
         doctor['active'] ??= false;
         doctor['serialStart'] ??= 1;
         doctor['nowServing'] ??= 0;
+        doctor['paused'] ??= false;
       }
 
       setState(() {
         doctors = decoded;
       });
     }
+  }
+
+  Future<void> saveTodaySettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('today_settings', jsonEncode(doctors));
   }
 
   String todayDate = DateFormat("dd MMM yyyy").format(DateTime.now());
@@ -81,7 +88,12 @@ class _TodaysSettingsState extends State<TodaysSettings> {
       return name.contains(searchText);
     }).toList();
 
+
+///Scafold Started
+
     return Scaffold(
+
+      ///AppBar
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
@@ -95,7 +107,7 @@ class _TodaysSettingsState extends State<TodaysSettings> {
           style: app_textstyles.appBarTitle.copyWith(color: Colors.white),
         ),
       ),
-
+///Body
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20),
@@ -139,11 +151,11 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                 ),
               ),
 
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
 
               ListView.builder(
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
+                physics:  NeverScrollableScrollPhysics(),
                 itemCount: filteredDoctors.length,
                 itemBuilder: (context, index) {
                   final doctor = filteredDoctors[index];
@@ -157,15 +169,13 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                     statusColor = Colors.red;
                   }
 
-                  String doctorStatus = status;
 
-                  if (doctor['active'] == false) {
-                    doctorStatus = "Off Duty";
-                  }
+
+
 
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    padding: const EdgeInsets.all(16),
+                    margin:  EdgeInsets.only(bottom: 20),
+                    padding:  EdgeInsets.all(16),
 
                     decoration: BoxDecoration(
                       color: AppColors.card_primary,
@@ -184,9 +194,9 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
+                          color: Colors.black.withOpacity(0.08),
                           blurRadius: 8,
-                          offset: const Offset(0, 4),
+                          offset:  Offset(0, 4),
                         ),
                       ],
                     ),
@@ -210,6 +220,8 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                                     doctor['status'] = "Off Duty";
                                   }
                                 });
+
+                                saveTodaySettings();
                               },
                             ),
                             Text(
@@ -221,13 +233,13 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                           ],
                         ),
 
-                        const SizedBox(height: 05),
+                         SizedBox(height: 05),
 
                         Row(
                           children: [
-                            const Text("Shift : "),
+                            Text("Shift : "),
 
-                            const SizedBox(width: 10),
+                             SizedBox(width: 10),
 
                             DropdownButton<String>(
                               value: doctor['shift'] ?? "Morning",
@@ -248,13 +260,13 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                           ],
                         ),
 
-                        const SizedBox(height: 10),
+                         SizedBox(height: 10),
 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Start : ${doctor['startTime'] != null ? doctor['startTime'].format(context) : '--'}",
+                              "Start : ${doctor['startTime'] != null ? formatTime(doctor['startTime']) : '--'}",
                               style: app_textstyles.body,
                             ),
 
@@ -267,8 +279,10 @@ class _TodaysSettingsState extends State<TodaysSettings> {
 
                                 if (picked != null) {
                                   setState(() {
-                                    doctor['startTime'] = picked;
+                                    doctor['startTime'] =
+                                        "${picked.hour}:${picked.minute}";
                                   });
+                                  saveTodaySettings();
                                 }
                               },
                               child: Text(
@@ -288,7 +302,9 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "End : ${doctor['endTime'] != null ? doctor['endTime'].format(context) : '--'}",
+                              "End : ${doctor['endTime'] != null
+                                  ? formatTime(doctor['endTime'])
+                                  : '--'}",
                               style: app_textstyles.body,
                             ),
 
@@ -301,8 +317,10 @@ class _TodaysSettingsState extends State<TodaysSettings> {
 
                                 if (picked != null) {
                                   setState(() {
-                                    doctor['endTime'] = picked;
+                                    doctor['endTime'] =
+                                        "${picked.hour}:${picked.minute}";
                                   });
+                                  saveTodaySettings();
                                 }
                               },
                               child: Text(
@@ -330,27 +348,53 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                         SizedBox(height: 05),
                         Text("Now Serving: ${doctor['nowServing']}"),
 
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10),
 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-
                             ElevatedButton(
                               onPressed: (doctor['status'] != "Running")
                                   ? null
                                   : () {
-                                setState(() {
-                                  doctor['paused'] = true;
-                                  doctor['status'] = "Paused";
-                                });
-                              },
+                                      setState(() {
+                                        doctor['paused'] = true;
+                                        doctor['status'] = "Paused";
+                                      });
+                                      saveTodaySettings();
+                                    },
+
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith<Color>((
+                                      states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.disabled,
+                                      )) {
+                                        return AppColors.primary_disabled;
+                                      }
+                                      return Colors.orange;
+                                    }),
+
+                                foregroundColor:
+                                    WidgetStateProperty.resolveWith<Color>((
+                                      states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.disabled,
+                                      )) {
+                                        return AppColors.primary;
+                                      }
+                                      return Colors.white;
+                                    }),
+                              ),
+
                               child: Text(
                                 "Pause",
                                 style: app_textstyles.inputText.copyWith(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -359,17 +403,44 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                               onPressed: (doctor['status'] != "Paused")
                                   ? null
                                   : () {
-                                setState(() {
-                                  doctor['paused'] = false;
-                                  doctor['status'] = "Running";
-                                });
-                              },
+                                      setState(() {
+                                        doctor['paused'] = false;
+                                        doctor['status'] = "Running";
+                                      });
+                                      saveTodaySettings();
+                                    },
+
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith<Color>((
+                                      states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.disabled,
+                                      )) {
+                                        return AppColors.primary_disabled;
+                                      }
+                                      return AppColors.primary;
+                                    }),
+
+                                foregroundColor:
+                                    WidgetStateProperty.resolveWith<Color>((
+                                      states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.disabled,
+                                      )) {
+                                        return AppColors.primary;
+                                      }
+                                      return Colors.white;
+                                    }),
+                              ),
+
                               child: Text(
-                                "Start",
+                                "Resume",
                                 style: app_textstyles.inputText.copyWith(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -380,92 +451,93 @@ class _TodaysSettingsState extends State<TodaysSettings> {
                   );
                 },
               ),
+
               SizedBox(height: 10),
-              Center(
+            ],
+          ),
+        ),
+      ),
+
+      ///Bottom  NavBar for Save and Reset
+
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16, 0, 16, 20),
+          child: Row(
+            children: [
+              /// Reset Button
+              Expanded(
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      for (var doctor in doctors) {
-                        doctor['nowServing'] = doctor['serialStart'];
+                      for (int i = 0; i < doctors.length; i++) {
+                        doctors[i]['nowServing'] = doctors[i]['serialStart'];
                       }
                     });
-                  },
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("All serials reset",)),
+                    );
+                    saveTodaySettings();
 
-                  child: Text(
-                    "Reset All Serials",
-                    style: app_textstyles.inputText.copyWith(
-                      fontSize: 16,
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child:  Text(
+                    "Reset",
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 10,),
 
+               SizedBox(width: 10),
+
+              /// Save Button
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+
+                    prefs.setString('today_settings', jsonEncode(doctors));
+
+                    prefs.setString('doctors', jsonEncode(doctors));
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Today's settings saved")),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding:  EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child:  Text(
+                    "Save",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: SafeArea(
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.25),
-              blurRadius: 10,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        child: ElevatedButton(
-          onPressed: () async {
-
-            final prefs = await SharedPreferences.getInstance();
-
-            prefs.setString(
-              'today_settings',
-              jsonEncode(doctors),
-            );
-
-            prefs.setString(
-              'doctors',
-              jsonEncode(doctors),
-            );
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Today's settings saved"),
-              ),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            elevation: 0,
-          ),
-          child: Text(
-            "Save Today's Settings",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    ),
     );
   }
 
   void updateStatus() {
     for (var doctor in doctors) {
-
       if (doctor['active'] == false) {
         doctor['status'] = "Off Duty";
         continue;
@@ -482,8 +554,8 @@ class _TodaysSettingsState extends State<TodaysSettings> {
         continue;
       }
 
-      TimeOfDay start = doctor['startTime'];
-      TimeOfDay end = doctor['endTime'];
+      TimeOfDay start = parseTime(doctor['startTime']);
+      TimeOfDay end = parseTime(doctor['endTime']);
       final now = TimeOfDay.now();
 
       int nowMin = now.hour * 60 + now.minute;
@@ -492,15 +564,26 @@ class _TodaysSettingsState extends State<TodaysSettings> {
 
       if (nowMin < startMin) {
         doctor['status'] = "Not Started";
-      }
-      else if (nowMin >= startMin && nowMin <= endMin) {
+      } else if (nowMin >= startMin && nowMin <= endMin) {
         doctor['status'] = "Running";
-      }
-      else {
+      } else {
         doctor['status'] = "Finished";
       }
     }
 
     setState(() {});
+  }
+
+  ///Helper Functions
+  TimeOfDay parseTime(String time) {
+    final parts = time.split(":");
+    return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+  }
+
+  String formatTime(String time) {
+    final t = parseTime(time);
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, t.hour, t.minute);
+    return DateFormat('hh:mm a').format(dt);
   }
 }

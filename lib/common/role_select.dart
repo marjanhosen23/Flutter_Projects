@@ -6,7 +6,7 @@ import 'package:hospital_app/theme/app_colors.dart';
 import 'package:hospital_app/theme/app_textstyles.dart';
 
 class RoleSelect extends StatefulWidget {
-  const RoleSelect({super.key});
+   RoleSelect({super.key});
 
   @override
   State<RoleSelect> createState() => _RoleSelectState();
@@ -55,7 +55,7 @@ class _RoleSelectState extends State<RoleSelect> {
               left: 13,
               right: 13,
               child: Container(
-                padding: const EdgeInsets.all(20),
+                padding:  EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: AppColors.inputColor,
                   borderRadius: BorderRadius.circular(20),
@@ -66,7 +66,7 @@ class _RoleSelectState extends State<RoleSelect> {
                       "আপনি কে?",
                       style: app_textstyles.sectionTitle,
                     ),
-                    const SizedBox(height: 20),
+                     SizedBox(height: 20),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -74,15 +74,15 @@ class _RoleSelectState extends State<RoleSelect> {
                         Column(
                           children: [
                             roleCard('User', 'assets/icons/woman.png'),
-                            const SizedBox(height: 20),
+                             SizedBox(height: 20),
                             roleCard('Admin', 'assets/icons/admin.png'),
                           ],
                         ),
-                        const SizedBox(width: 20),
+                         SizedBox(width: 20),
                         roleCard('Staff', 'assets/icons/staff.png'),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                     SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -95,15 +95,15 @@ class _RoleSelectState extends State<RoleSelect> {
                             }
                           if(selectedRole == 'User')
                             {
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => const HospitalList()));
+                              Navigator.push(context, MaterialPageRoute(builder: (_) =>  HospitalList()));
                             }
                           else if(selectedRole == 'Staff')
                             {
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => const StaffLogin()));
+                              Navigator.push(context, MaterialPageRoute(builder: (_) =>  StaffLogin()));
                             }
                           else if(selectedRole== 'Admin')
                             {
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminLogin()));
+                              Navigator.push(context, MaterialPageRoute(builder: (_) =>  AdminLogin()));
                             }
                         },
                         child: Row(
@@ -113,7 +113,7 @@ class _RoleSelectState extends State<RoleSelect> {
                               'Get Started',
                               style: app_textstyles.button,
                             ),
-                            const SizedBox(width: 8),
+                             SizedBox(width: 8),
                             Image.asset(
                               'assets/icons/right-arrow.png',
                               width: 18,
@@ -146,7 +146,7 @@ class _RoleSelectState extends State<RoleSelect> {
       },
       child: Container(
         width: 140,
-        padding: const EdgeInsets.all(20),
+        padding:  EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.card_primary,
           borderRadius: BorderRadius.circular(15),
@@ -165,8 +165,7 @@ class _RoleSelectState extends State<RoleSelect> {
         ),
         child: Column(
           children: [
-            Image.asset(imagePath, width: 72, height: 72),
-            const SizedBox(height: 8),
+            Image.asset(imagePath, width: 72, height: 72), SizedBox(height: 8),
             Text(title, style: app_textstyles.cardTitle),
           ],
         ),
